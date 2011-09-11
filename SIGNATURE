@@ -1,0 +1,45 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.68.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+SHA1 09367b737f90742156224e8ca512f50336718078 Build.PL
+SHA1 d0f2060d740ce428f14c47b7f9cc2c65bf66cd7b COPYING
+SHA1 18e4cb70f0ffa6d13a891f3a993f5981938656e0 Changelog
+SHA1 491bda58e342157a73dc799de56db11d8375cd54 MANIFEST
+SHA1 3155412f815621a1834ea90ba768e3c6c6daeeeb META.yml
+SHA1 52039316479b8cbf66b1581753888afd56cfe45c README
+SHA1 17205db34be462239533f19ce1ddd12c6114d0de bin/efa-m
+SHA1 5fe0ef1007f8301c23a335972230ef6737d2b0cf lib/Travel/Status/DE/VRR.pm
+SHA1 f7548db1411cd2259ba3107c622f1cb153bacd1a lib/Travel/Status/DE/VRR/Result.pm
+SHA1 fd251ffc56ca6e52020c906b61158f78b035679d t/10-pod-coverage.t
+SHA1 69a147ba2e55c0d50dfb03f44a619685901afffa t/20-vrr.t
+SHA1 fc746d261b59bd57eef01270228aa8adc4f34083 t/in/essen_bp.html
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQIcBAEBCAAGBQJObRlIAAoJEBANW/tRZuAFAfsQAN51n/1wsNOOiKd3otPhOOfk
+BTy7b27CHZKpmTPLdj5TZPIr2Unb+BdRKJHItD8lSFbG8QeJTwdcXnKbnzHWmkZU
+B7I6x83qBongbDXdBpCh56eJq71/MC0umVfMxPmLYLV5Rao3/s5YecOILdvm6M/u
+QibzyYoMtKviZSLDIQw/yWoRAQvQ9q7cFJMGxbgLkSu7hYy5uUqa/enIAqHje98U
+cLdzJBsfYJdmVpr3/pI74EOfdNC1q8CVS6n04XSUBh+/QxaL5nSJsM/A4JZsOWak
+ag+xNSd+M598uuAOnKmGwrIbqrXLnrIMPYOF/9G8sJPp2xOdk4lDZCOlZMRBGNEW
+OZzYn+ipxiQP7URbdV+kdN7XdZ0fUXiND6tB/wy4D4jU+qmo9GYSGspsiutCVNIH
+hn/IoJP0rCY75LsB9+ZdF0qr8cSKDXwBlyQNNiORQwzboMhP353WL/tN4eBBh6jJ
+J0iksudQg89i0awFRBO+KuSU+HDn8Lnvx3D7e1EYjHSAjKegvQGnIDxKAGWOvnzT
+sObf2d+eubLkBo4BaI1T/tncGdzDMiVWXdxu010YGVxkxj4SkEKPcvv9TljI0ZYZ
+x9XY6IHZYIzhV9Qo+uX7MYe7m+J9LvAjdOpKeBcmvIQBbFnjIsos136EWEievZQ3
+BzkAaFpJOhgjlFQ2gsRV
+=nGP4
+-----END PGP SIGNATURE-----

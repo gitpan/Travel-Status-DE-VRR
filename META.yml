@@ -1,0 +1,34 @@
+---
+abstract: 'inofficial VRR departure monitor'
+author:
+  - 'Copyright (C) 2011 by Daniel Friesel E<lt>derf@finalrewind.orgE<gt>'
+build_requires:
+  File::Slurp: 0
+  Test::More: 0
+  Test::Pod: 0
+configure_requires:
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3603'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Travel-Status-DE-VRR
+provides:
+  Travel::Status::DE::VRR:
+    file: lib/Travel/Status/DE/VRR.pm
+    version: 0.01
+  Travel::Status::DE::VRR::Result:
+    file: lib/Travel/Status/DE/VRR/Result.pm
+    version: 0.01
+requires:
+  Carp: 0
+  Class::Accessor: 0
+  Getopt::Long: 0
+  List::Util: 0
+  WWW::Mechanize: 0
+  XML::LibXML: 0
+  perl: v5.10.1
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.01

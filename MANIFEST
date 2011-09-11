@@ -1,0 +1,13 @@
+bin/efa-m
+Build.PL
+Changelog
+COPYING
+lib/Travel/Status/DE/VRR.pm
+lib/Travel/Status/DE/VRR/Result.pm
+MANIFEST			This list of files
+META.yml
+README
+t/10-pod-coverage.t
+t/20-vrr.t
+t/in/essen_bp.html
+SIGNATURE    Added here by Module::Build
