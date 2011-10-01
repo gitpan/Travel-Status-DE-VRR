@@ -17,10 +17,10 @@ name: Travel-Status-DE-VRR
 provides:
   Travel::Status::DE::VRR:
     file: lib/Travel/Status/DE/VRR.pm
-    version: 0.01
+    version: 0.02
   Travel::Status::DE::VRR::Result:
     file: lib/Travel/Status/DE/VRR/Result.pm
-    version: 0.01
+    version: 0.02
 requires:
   Carp: 0
   Class::Accessor: 0
@@ -31,4 +31,4 @@ requires:
   perl: v5.10.1
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.01
+version: 0.02
