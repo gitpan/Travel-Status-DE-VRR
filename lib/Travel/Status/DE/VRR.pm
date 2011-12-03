@@ -4,18 +4,20 @@ use strict;
 use warnings;
 use 5.010;
 
-our $VERSION = '0.02';
+our $VERSION = '1.00';
 
-use Carp qw(confess);
+use Carp qw(confess cluck);
+use Encode qw(encode decode);
+use Travel::Status::DE::VRR::Line;
 use Travel::Status::DE::VRR::Result;
-use WWW::Mechanize;
+use LWP::UserAgent;
 use XML::LibXML;
 
 sub new {
 	my ( $class, %opt ) = @_;
 
-	my $mech = WWW::Mechanize->new();
-	my @now  = localtime( time() );
+	my $ua  = LWP::UserAgent->new(%opt);
+	my @now = localtime( time() );
 
 	my @time = @now[ 2, 1 ];
 	my @date = ( $now[3], $now[4] + 1, $now[5] + 1900 );
@@ -73,9 +75,11 @@ sub new {
 			itdTimeHour            => $time[0],
 			itdTimeMinute          => $time[1],
 			language               => 'de',
+			mode                   => 'direct',
 			nameInfo_dm            => 'invalid',
 			nameState_dm           => 'empty',
 			name_dm                => $opt{name},
+			outputFormat           => 'XML',
 			placeInfo_dm           => 'invalid',
 			placeState_dm          => 'empty',
 			place_dm               => $opt{place},
@@ -93,54 +97,29 @@ sub new {
 
 	bless( $self, $class );
 
-	$mech->post( 'http://efa.vrr.de/vrr/XSLT_DM_REQUEST', $self->{post} );
+	my $response
+	  = $ua->post( 'http://efa.vrr.de/vrr/XSLT_DM_REQUEST', $self->{post} );
 
-	if ( $mech->response->is_error ) {
-		$self->{errstr} = $mech->response->status_line;
+	if ( $response->is_error ) {
+		$self->{errstr} = $response->status_line;
 		return $self;
 	}
 
-	my $form = $mech->form_number(1);
+	$self->{xml} = $response->decoded_content;
 
-	if ( not $form ) {
-		$self->{errstr} = 'Unable to find the form - no lines returned?';
-		return $self;
-	}
+	$self->{tree} = XML::LibXML->load_xml( string => $self->{xml}, );
 
-	for my $input ( $form->find_input( 'dmLineSelection', 'option' ) ) {
-		$input->check();
-	}
-
-	$mech->click('submitButton');
-
-	if ( $mech->response->is_error ) {
-		$self->{errstr} = $mech->response->status_line;
-		return $self;
-	}
-
-	$self->{html} = $mech->response->decoded_content;
-
-	$self->{tree} = XML::LibXML->load_html(
-		string            => $self->{html},
-		recover           => 2,
-		suppress_errors   => 1,
-		suppress_warnings => 1,
-	);
+	$self->check_for_ambiguous();
 
 	return $self;
 }
 
-sub new_from_html {
+sub new_from_xml {
 	my ( $class, %opt ) = @_;
 
-	my $self = { html => $opt{html}, };
+	my $self = { xml => $opt{xml}, };
 
-	$self->{tree} = XML::LibXML->load_html(
-		string            => $self->{html},
-		recover           => 2,
-		suppress_errors   => 1,
-		suppress_warnings => 1,
-	);
+	$self->{tree} = XML::LibXML->load_xml( string => $self->{xml}, );
 
 	return bless( $self, $class );
 }
@@ -151,39 +130,224 @@ sub errstr {
 	return $self->{errstr};
 }
 
+sub sprintf_date {
+	my ($e) = @_;
+
+	return sprintf( '%02d.%02d.%d',
+		$e->getAttribute('day'),
+		$e->getAttribute('month'),
+		$e->getAttribute('year'),
+	);
+}
+
+sub sprintf_time {
+	my ($e) = @_;
+
+	return sprintf( '%02d:%02d',
+		$e->getAttribute('hour'),
+		$e->getAttribute('minute'),
+	);
+}
+
+sub check_for_ambiguous {
+	my ($self) = @_;
+
+	my $xml = $self->{tree};
+
+	my $xp_place = XML::LibXML::XPathExpression->new('//itdOdv/itdOdvPlace');
+	my $xp_name  = XML::LibXML::XPathExpression->new('//itdOdv/itdOdvName');
+	my $xp_mesg
+	  = XML::LibXML::XPathExpression->new('//itdMessage[@type="error"]');
+
+	my $xp_place_elem = XML::LibXML::XPathExpression->new('./odvPlaceElem');
+	my $xp_name_elem  = XML::LibXML::XPathExpression->new('./odvNameElem');
+
+	my $e_place = ( $xml->findnodes($xp_place) )[0];
+	my $e_name  = ( $xml->findnodes($xp_name) )[0];
+	my @e_mesg  = $xml->findnodes($xp_mesg);
+
+	if ( not( $e_place and $e_name ) ) {
+
+		# this should not happen[tm]
+		cluck('skipping ambiguity check- itdOdvPlace/itdOdvName missing');
+		return;
+	}
+
+	my $s_place = $e_place->getAttribute('state');
+	my $s_name  = $e_name->getAttribute('state');
+
+	if ( $s_place eq 'list' ) {
+		$self->{errstr} = sprintf(
+			'Ambiguous place input: %s',
+			join( q{ | },
+				map { decode( 'UTF-8', $_->textContent ) }
+				  @{ $e_place->findnodes($xp_place_elem) } )
+		);
+		return;
+	}
+	if ( $s_name eq 'list' ) {
+		$self->{errstr} = sprintf(
+			'Ambiguous name input: %s',
+			join( q{ | },
+				map { decode( 'UTF-8', $_->textContent ) }
+				  @{ $e_name->findnodes($xp_name_elem) } )
+		);
+		return;
+	}
+	if ( $s_place eq 'notidentified' ) {
+		$self->{errstr} = 'invalid place parameter';
+		return;
+	}
+	if ( $s_name eq 'notidentified' ) {
+		$self->{errstr} = 'invalid name parameter';
+		return;
+	}
+	if (@e_mesg) {
+		$self->{errstr} = join( q{; }, map { $_->textContent } @e_mesg );
+		return;
+	}
+
+	return;
+}
+
+sub lines {
+	my ($self) = @_;
+	my @lines;
+
+	my $xp_element
+	  = XML::LibXML::XPathExpression->new('//itdServingLines/itdServingLine');
+
+	my $xp_info  = XML::LibXML::XPathExpression->new('./itdNoTrain');
+	my $xp_route = XML::LibXML::XPathExpression->new('./itdRouteDescText');
+	my $xp_oper  = XML::LibXML::XPathExpression->new('./itdOperator/name');
+
+	if ( $self->{lines} ) {
+		return @{ $self->{lines} };
+	}
+
+	for my $e ( $self->{tree}->findnodes($xp_element) ) {
+
+		my $e_info  = ( $e->findnodes($xp_info) )[0];
+		my $e_route = ( $e->findnodes($xp_route) )[0];
+		my $e_oper  = ( $e->findnodes($xp_oper) )[0];
+
+		if ( not( $e_info and $e_oper ) ) {
+			cluck( 'node with insufficient data. This should not happen. '
+				  . $e->getAttribute('number') );
+			next;
+		}
+
+		my $line       = $e->getAttribute('number');
+		my $direction  = $e->getAttribute('direction');
+		my $valid      = $e->getAttribute('valid');
+		my $type       = $e_info->getAttribute('name');
+		my $route      = ( $e_route ? $e_route->textContent : undef );
+		my $operator   = $e_oper->textContent;
+		my $identifier = $e->getAttribute('stateless');
+
+		push(
+			@lines,
+			Travel::Status::DE::VRR::Line->new(
+				name       => $line,
+				direction  => decode( 'UTF-8', $direction ),
+				valid      => $valid,
+				type       => decode( 'UTF-8', $type ),
+				route      => decode( 'UTF-8', $route ),
+				operator   => decode( 'UTF-8', $operator ),
+				identifier => $identifier,
+			)
+		);
+	}
+
+	$self->{lines} = \@lines;
+
+	return @lines;
+}
+
 sub results {
 	my ($self) = @_;
 	my @results;
 
-	my $xp_element = XML::LibXML::XPathExpression->new(
-		'//td[@colspan="3"]/table/tr[starts-with(@class,"bgColor")]');
+	my $xp_element = XML::LibXML::XPathExpression->new('//itdDeparture');
 
-	my @parts = (
-		[ 'time',     './td[2]' ],
-		[ 'platform', './td[3]' ],
-		[ 'line',     './td[5]' ],
-		[ 'dest',     './td[7]' ],
-		[ 'info',     './td[9]' ],
-	);
+	my $xp_date  = XML::LibXML::XPathExpression->new('./itdDateTime/itdDate');
+	my $xp_time  = XML::LibXML::XPathExpression->new('./itdDateTime/itdTime');
+	my $xp_rdate = XML::LibXML::XPathExpression->new('./itdRTDateTime/itdDate');
+	my $xp_rtime = XML::LibXML::XPathExpression->new('./itdRTDateTime/itdTime');
+	my $xp_line  = XML::LibXML::XPathExpression->new('./itdServingLine');
+	my $xp_info
+	  = XML::LibXML::XPathExpression->new('./itdServingLine/itdNoTrain');
 
-	@parts = map { [ $_->[0], XML::LibXML::XPathExpression->new( $_->[1] ) ] }
-	  @parts;
+	if ( $self->{results} ) {
+		return @{ $self->{results} };
+	}
 
-	for my $tr ( $self->{tree}->findnodes($xp_element) ) {
-		my ( $time, $platform, $line, $dest, $info )
-		  = map { ( $tr->findnodes( $_->[1] ) )[0]->textContent } @parts;
+	$self->lines;
+
+	for my $e ( $self->{tree}->findnodes($xp_element) ) {
+
+		my $e_date = ( $e->findnodes($xp_date) )[0];
+		my $e_time = ( $e->findnodes($xp_time) )[0];
+		my $e_line = ( $e->findnodes($xp_line) )[0];
+		my $e_info = ( $e->findnodes($xp_info) )[0];
+
+		my $e_rdate = ( $e->findnodes($xp_rdate) )[0];
+		my $e_rtime = ( $e->findnodes($xp_rtime) )[0];
+
+		if ( not( $e_date and $e_time and $e_line ) ) {
+			cluck('node with insufficient data. This should not happen');
+			next;
+		}
+
+		my $date = sprintf_date($e_date);
+		my $time = sprintf_time($e_time);
+
+		my $rdate = $e_rdate ? sprintf_date($e_rdate) : $date;
+		my $rtime = $e_rtime ? sprintf_time($e_rtime) : $time;
+
+		my $platform  = $e->getAttribute('platform');
+		my $line      = $e_line->getAttribute('number');
+		my $dest      = $e_line->getAttribute('direction');
+		my $info      = $e_info->textContent;
+		my $countdown = $e->getAttribute('countdown');
+		my $delay     = $e_info->getAttribute('delay') // 0;
+		my $type      = $e_info->getAttribute('name');
+
+		my $platform_is_db = 0;
+
+		my @line_obj
+		  = grep { $_->{identifier} eq $e_line->getAttribute('stateless') }
+		  @{ $self->{lines} };
+
+		if ( $platform =~ s{ ^ \# }{}ox ) {
+			$platform_is_db = 1;
+		}
 
 		push(
 			@results,
 			Travel::Status::DE::VRR::Result->new(
-				time        => $time,
+				date        => $rdate,
+				time        => $rtime,
 				platform    => $platform,
+				platform_db => $platform_is_db,
+				lineref     => $line_obj[0] // undef,
 				line        => $line,
-				destination => $dest,
-				info        => $info,
+				destination => decode( 'UTF-8', $dest ),
+				countdown   => $countdown,
+				info        => decode( 'UTF-8', $info ),
+				delay       => $delay,
+				sched_date  => $date,
+				sched_time  => $time,
+				type        => $type,
 			)
 		);
 	}
+
+	@results = map { $_->[0] }
+	  sort { $a->[1] <=> $b->[1] }
+	  map { [ $_, $_->countdown ] } @results;
+
+	$self->{results} = \@results;
 
 	return @results;
 }
@@ -194,7 +358,7 @@ __END__
 
 =head1 NAME
 
-Travel::Status::DE::VRR - inofficial VRR departure monitor
+Travel::Status::DE::VRR - unofficial VRR departure monitor
 
 =head1 SYNOPSIS
 
@@ -206,18 +370,18 @@ Travel::Status::DE::VRR - inofficial VRR departure monitor
 
     for my $d ($status->results) {
         printf(
-            "%s %-8s %-5s %s\n",
+            "%s %d %-5s %s\n",
             $d->time, $d->platform, $d->line, $d->destination
         );
     }
 
 =head1 VERSION
 
-version 0.02
+version 1.00
 
 =head1 DESCRIPTION
 
-Travel::Status::DE::VRR is an inofficial interface to the VRR departure
+Travel::Status::DE::VRR is an unofficial interface to the VRR departure
 monitor available at
 L<http://efa.vrr.de/vrr/XSLT_DM_REQUEST?language=de&itdLPxx_transpCompany=vrr&>.
 
@@ -253,8 +417,13 @@ address / poi / stop name to list departures for.
 
 =item $status->errstr
 
-In case of an error in the HTTP requests, returns a string describing it.  If
-no error occured, returns undef.
+In case of en HTTP request or EFA error, returns a string describing it. If
+none occured, returns undef.
+
+=item $status->lines
+
+Returns a list of Travel::Status::DE::VRR::Line(3pm) objects, each one
+describing one line servicing the selected station.
 
 =item $status->results
 
@@ -273,7 +442,7 @@ None.
 
 =item * Class::Accessor(3pm)
 
-=item * WWW::Mechanize(3pm)
+=item * LWP::UserAgent(3pm)
 
 =item * XML::LibXML(3pm)
 

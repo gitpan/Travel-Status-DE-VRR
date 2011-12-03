@@ -1,0 +1,62 @@
+{
+   "abstract" : "unofficial VRR departure monitor",
+   "author" : [
+      "Copyright (C) 2011 by Daniel Friesel E<lt>derf@finalrewind.orgE<gt>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.110440",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Travel-Status-DE-VRR",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "File::Slurp" : 0,
+            "Test::More" : 0,
+            "Test::Pod" : 0
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.38"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Carp" : 0,
+            "Class::Accessor" : 0,
+            "Getopt::Long" : 0,
+            "LWP::UserAgent" : 0,
+            "List::Util" : 0,
+            "XML::LibXML" : 0,
+            "perl" : "v5.10.1"
+         }
+      }
+   },
+   "provides" : {
+      "Travel::Status::DE::VRR" : {
+         "file" : "lib/Travel/Status/DE/VRR.pm",
+         "version" : "1.00"
+      },
+      "Travel::Status::DE::VRR::Line" : {
+         "file" : "lib/Travel/Status/DE/VRR/Line.pm",
+         "version" : "1.00"
+      },
+      "Travel::Status::DE::VRR::Result" : {
+         "file" : "lib/Travel/Status/DE/VRR/Result.pm",
+         "version" : "1.00"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ]
+   },
+   "version" : "1.00"
+}

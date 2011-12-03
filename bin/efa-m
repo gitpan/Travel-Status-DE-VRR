@@ -3,22 +3,22 @@ use strict;
 use warnings;
 use 5.010;
 
-our $VERSION = '0.02';
+our $VERSION = '1.00';
+
+binmode( STDOUT, ':encoding(utf-8)' );
 
 use Getopt::Long qw(:config no_ignore_case);
 use List::Util qw(max);
 use Travel::Status::DE::VRR;
 
-my ( $date, $time, $input_type );
+my ( $date, $time, $input_type, $list_lines );
 my ( @grep_lines, @grep_platforms );
-my @output;
-
-binmode( STDOUT, ':encoding(utf-8)' );
 
 GetOptions(
 	'd|date=s'      => \$date,
 	'h|help'        => sub { show_help(0) },
 	'l|line=s@'     => \@grep_lines,
+	'L|linelist'    => \$list_lines,
 	'p|platform=s@' => \@grep_platforms,
 	't|time=s'      => \$time,
 	'V|version'     => \&show_version,
@@ -87,13 +87,62 @@ sub display_result {
 		}
 
 		printf(
-			join( q{  },
-				"%${line_length[0]}s",
-				( map { "%-${_}s" } @line_length[ 1 .. $#line_length ] ) )
-			  . "\n",
+			join( q{  }, ( map { "%-${_}s" } @line_length ) ) . "\n",
 			@{$line}[ 0 .. 3 ]
 		);
 	}
+
+	return;
+}
+
+sub show_lines {
+	my @output;
+
+	for my $l ( $status->lines ) {
+
+		if ( @grep_lines and not( $l->name ~~ \@grep_lines ) ) {
+			next;
+		}
+
+		push( @output,
+			[ $l->type, $l->name, $l->direction // q{}, $l->route // q{} ] );
+	}
+
+	display_result(@output);
+
+	return;
+}
+
+sub show_results {
+	my @output;
+
+	for my $d ( $status->results ) {
+
+		my $platform = $d->platform;
+		my $dtime    = $d->time;
+
+		if ( $d->platform_db ) {
+			$platform .= ' (DB)';
+		}
+
+		if (
+			( @grep_lines and not( $d->line ~~ \@grep_lines ) )
+			or ( @grep_platforms
+				and not( $platform ~~ \@grep_platforms ) )
+		  )
+		{
+			next;
+		}
+
+		if ( $d->delay ) {
+			$dtime .= ' (+' . $d->delay . ')';
+		}
+
+		push( @output,
+			[ $dtime, $platform, $d->line, $d->destination, $d->info ] );
+	}
+
+	display_result(@output);
 
 	return;
 }
@@ -103,28 +152,18 @@ if ( my $err = $status->errstr ) {
 	exit 2;
 }
 
-for my $d ( $status->results ) {
-
-	if (
-		( @grep_lines and not( $d->line ~~ \@grep_lines ) )
-		or ( @grep_platforms
-			and not( substr( $d->platform, 6 ) ~~ \@grep_platforms ) )
-	  )
-	{
-		next;
-	}
-
-	push( @output,
-		[ $d->time, $d->platform, $d->line, $d->destination, $d->info ] );
+if ($list_lines) {
+	show_lines();
 }
-
-display_result(@output);
+else {
+	show_results();
+}
 
 __END__
 
 =head1 NAME
 
-efa-m - Inofficial interface to the efa.vrr.de departure monitor
+efa-m - Unofficial interface to the efa.vrr.de departure monitor
 
 =head1 SYNOPSIS
 
@@ -132,7 +171,7 @@ B<efa-m> [B<-d> I<date>] [B<-t> I<time>] I<city> [I<type>B<:>]I<name>
 
 =head1 VERSION
 
-version 0.02
+version 1.00
 
 =head1 DESCRIPTION
 

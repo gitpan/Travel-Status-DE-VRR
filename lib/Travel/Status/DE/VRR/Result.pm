@@ -6,10 +6,12 @@ use 5.010;
 
 use parent 'Class::Accessor';
 
-our $VERSION = '0.02';
+our $VERSION = '1.00';
 
 Travel::Status::DE::VRR::Result->mk_ro_accessors(
-	qw(destination time platform line info));
+	qw(countdown date delay destination info line lineref platform
+	  platform_db sched_date sched_time time type)
+);
 
 sub new {
 	my ( $obj, %conf ) = @_;
@@ -39,42 +41,88 @@ departure received by Travel::Status::DE::VRR
 
 =head1 VERSION
 
-version 0.02
+version 1.00
 
 =head1 DESCRIPTION
 
 Travel::Status::DE::VRR::Result describes a single departure as obtained by
-TRavel::Status::DE::VRR.  It contains information about the time, platform,
+Travel::Status::DE::VRR.  It contains information about the time, platform,
 line number and destination.
 
 =head1 METHODS
 
 =head2 ACCESSORS
 
+"Actual" in the description means that the delay (if available) is already
+included in the calculation, "Scheduled" means it isn't.
+
 =over
+
+=item $departure->countdown
+
+Actual time in minutes from now until the tram/bus/train will depart.
+
+If delay information is available, it is already included.
+
+=item $departure->date
+
+Actual departure date (DD.MM.YYYY).
+
+=item $departure->delay
+
+Expected delay from scheduled departure time in minutes.
+
+Note that this is only available for DB trains, in other cases it will always
+return 0.
 
 =item $departure->destination
 
-The tram/bus/train destination.
+Destination name.
 
 =item $departure->info
 
 Additional information related to the departure (string).  If departures for
 an address were requested, this is the stop name, otherwise it may be recent
-news related to the line's schedule.
+news related to the line's schedule.  If no information is available, returns
+an empty string.
 
 =item $departure->line
 
 The name/number of the line.
 
+=item $departure->lineref
+
+Travel::Status::DE::VRR::Line(3pm) object describing the departing line in
+detail.
+
 =item $departure->platform
 
-The departure platform.  Note that this is prefixed by either "Bstg." (for
-tram/bus departures) or "Gleis" (for trains).
+Departure platform number.
+
+=item $departure->platform_db
+
+true if the platform number is operated by DB ("Gleis x"), false ("Bstg. x")
+otherwise.
+
+Unfortunately, there is no distinction between tram and bus platforms yet,
+which also may have the same numbers.
+
+=item $departure->sched_date
+
+Scheduled departure date (DD.MM.YYYY).
+
+=item $departure->sched_time
+
+Scheduled departure time (HH:MM).
 
 =item $departure->time
 
-The departure time as string in "HH:MM" format.
+Actual departure time (HH:MM).
+
+=item $departure->type
+
+Type of the departure.  Note that efa.vrr.de sometimes puts bogus data in this
+field.  See L</DEPARTURE TYPES>.
 
 =back
 
@@ -87,19 +135,33 @@ The departure time as string in "HH:MM" format.
 Returns a new Travel::Status::DE::VRR::Result object.  You should not need to
 call this.
 
-Required I<data>:
+=back
+
+=head1 DEPARTURE TYPES
+
+The following are known so far:
 
 =over
 
-=item B<destination> => I<string>
+=item * Abellio-Zug
 
-=item B<line> => I<string>
+=item * Eurocity
 
-=item B<platform> => I<string>
+=item * Intercity-Express
 
-=item B<time> => I<string>
+=item * NE (NachtExpress / night bus)
 
-=back
+=item * Niederflurbus
+
+=item * R-Bahn (RE / RegionalExpress)
+
+=item * S-Bahn
+
+=item * SB (Schnellbus)
+
+=item * StraE<szlig>enbahn
+
+=item * U-Bahn
 
 =back
 
@@ -117,7 +179,8 @@ None.
 
 =head1 BUGS AND LIMITATIONS
 
-Unknown.
+C<< $result->type >> may contain bogus data.  This comes from the efa.vrr.de
+interface.
 
 =head1 SEE ALSO
 
