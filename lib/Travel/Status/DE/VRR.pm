@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use 5.010;
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 use Carp qw(confess cluck);
 use Encode qw(encode decode);
@@ -96,6 +96,8 @@ sub new {
 	};
 
 	bless( $self, $class );
+
+	$ua->env_proxy;
 
 	my $response
 	  = $ua->post( 'http://efa.vrr.de/vrr/XSLT_DM_REQUEST', $self->{post} );
@@ -377,7 +379,7 @@ Travel::Status::DE::VRR - unofficial VRR departure monitor
 
 =head1 VERSION
 
-version 1.01
+version 1.02
 
 =head1 DESCRIPTION
 
