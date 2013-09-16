@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.68.
+signed via the Module::Signature module, version 0.73.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -16,15 +16,15 @@ Hash: SHA256
 
 SHA1 1ad39daa62091decc92e57e453a5e57513234c05 Build.PL
 SHA1 d0f2060d740ce428f14c47b7f9cc2c65bf66cd7b COPYING
-SHA1 1ac742e78b2996c5f3821ff4480a19560a075958 Changelog
+SHA1 0f26b9fe8749a1e6a65a438e950b2cf90ec0a9e4 Changelog
 SHA1 ee528fc480254388e1f1a21d8ec0b79d46223aed MANIFEST
-SHA1 1f6439d72fd3c39fc6b0f148f5cebd7799e9729b META.json
-SHA1 cabc96bb1dd49968a16f4fc8b738701862c8ef67 META.yml
+SHA1 8262678f282f0143cd8e551f2cdc05a32cf02a3a META.json
+SHA1 115788926d31419751297b31bfac19a463ad2a0e META.yml
 SHA1 a3ae9f0ada711f3358498e10889fd408056b5875 README
-SHA1 97f1059aac14b9c3bf6473dcc640d9bb307b6798 bin/efa-m
-SHA1 ca0a238750ec145e582b23266df922dbb282e7e6 lib/Travel/Status/DE/VRR.pm
-SHA1 a7635459ed252365d20941277cc53fb033f10b55 lib/Travel/Status/DE/VRR/Line.pm
-SHA1 1bd5aca9ad9bcea569217d33d2a7bc6622359403 lib/Travel/Status/DE/VRR/Result.pm
+SHA1 d303343512fc61eab249463b4c48220a09526907 bin/efa-m
+SHA1 a7146d6a607de05765873d190d34a0761f643e7a lib/Travel/Status/DE/VRR.pm
+SHA1 4c8ae60f2062fc6da9b3f1dd204307e6657aa9d9 lib/Travel/Status/DE/VRR/Line.pm
+SHA1 63681640cc71c74abc1048d03ea410b0d6b62228 lib/Travel/Status/DE/VRR/Result.pm
 SHA1 fd251ffc56ca6e52020c906b61158f78b035679d t/10-pod-coverage.t
 SHA1 add16d37acd07ae909ffc334014b0f630bf25eb7 t/20-vrr.t
 SHA1 6445710b9c9c9961085a87aab2c7b2a154539a39 t/21-vrr-ambig.t
@@ -33,19 +33,19 @@ SHA1 fc746d261b59bd57eef01270228aa8adc4f34083 t/in/essen_bp.html
 SHA1 38b90abfe5233270093c1f042bf3a341303d9158 t/in/essen_hb.xml
 SHA1 2cafe2eb3057914e8ced624543bef13341c563d2 t/in/essen_hb_invalid.xml
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Version: GnuPG v1.4.14 (GNU/Linux)
 
-iQIcBAEBCAAGBQJRZZ5AAAoJEBANW/tRZuAFOzsQAMyiaqfL4XbWK7VdeC/t+znI
-G4NHa3rFnN8x8F1fSoiNZlleEgkbgNQ1+wMTZEy9oh8IgM8JGBsTZH5GkN6t8fqb
-qmWIEUa+KCYsvJH6NfoUPDk2Nh1yIPUQLLQwkqqn+5RNLx4foJZ/8fZsiYI0snp/
-Wwo8NCmXiqTivrNLm3n8F3SOiEmUK/8aVZhZF/VPnz3GcknQcEzMwsFTqnArherd
-bdY8ENAI5ETzSg1xTTp3wv/fXn/Ko3LyHwwdQCCQOH0tmiqxG2uxO2WtuI7sP4Sr
-P6wdIzmRqpnzD8qUECROeW8jfbK5cJ1wmmafIbvQZYt8pbTPmGmU81832a6vbpSS
-jR80gX+amK1fWlfGT50fJjJqwvq0TvM2IcCOn+Lb1MFWFJTE9Q9ALVInkb1Nntvr
-mNyaS+7xwUrnXxCKo+e+v6irgOxqeOUbfKzcI765JKP/xPSK4xR+BVuuLr7t7tD6
-tbYsBuPQiHUb9zKC7210W4muAN7uzTWAb2VfysUKEruqemfOUUp/vaAPNaotFJoL
-SFT3/l9+MDa6yd3t/d5wfESQQxXL6hdV1LPLvwEwFcmO9a1Fs7SPWBgcWSMa0fA6
-E5207BPmjiXZkiCqmbBR+Mxu5NwrL8uiXYu/DDz+B5x+ankg3V9shQ24GWaiy0gV
-UB2aqekbngNqC+22WSl+
-=02JF
+iQIcBAEBCAAGBQJSN4NGAAoJEBANW/tRZuAF4QgQAKmm5wV5ppokAvrNKeoCfpTl
+fLWtPhSn/fnsoxAqgQT+SZ+bi2sNQ0EAPS+4Bl2s7kF3qVPQklrNFteyIWEbJzPm
+ol+73maKeQkUMxx9238e8k4Ah4h3W3szX+DIZb89EQXxvUF1h3d4om3O8QlpfI70
+Tcdci0iBUK4RneE1vmjE/cXe3DlBaRQv/TtckHljbFNvOggpMuZbRVVzDBsLYsbf
+9LCdUt7FhL4UZ3zFCXf5ifmV3usP5c1eGYhMNNt2w8tQQZBysQBKuCnWSnHY0E9f
+jjxFyJLEMt0BHgUziS4oaa55OEyJpK6ieIyoG44I4TS5/mYSKLpKDKiZ+uL17AqB
+2K4xFwQRUX6ZGyuqMESf7+h6aH+9skdmD38QRenh8DiSd/ZgSxiwe6Pn3VHPR8tm
+UKieQNIb9Xkh0fEeJED24K4E9mDD01+z5OTCX9SgHsfUhqC4LKtq5UPT+Uz1KdCI
+p3FqHeD/iGPDEvaYjgYM0XPD9ry24nQ8xZZa+0bV7dzADTpqfEUN31X0nhP5V5xj
+DVhFu/XP1NymLQcLfnATTWZ+9Pl72pEuygkup0KgDhAqVpJC9Z3wz2rvu7alWiJ8
+ER08CVEGsfxCZbzEVBtBj2mk6IFD8rFD58wnLvIl1MWg0v2q0V3inKB/7dVdZl9f
+bZoC9WHlzJ/pm6Tw2SEZ
+=6AgD
 -----END PGP SIGNATURE-----
