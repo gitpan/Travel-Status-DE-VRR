@@ -6,7 +6,7 @@ use 5.010;
 
 use parent 'Class::Accessor';
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 Travel::Status::DE::VRR::Line->mk_ro_accessors(
 	qw(direction name operator route type valid));
@@ -18,6 +18,13 @@ sub new {
 
 	return bless( $ref, $obj );
 }
+
+sub TO_JSON {
+	my ($self) = @_;
+
+	return { %{$self} };
+}
+
 1;
 
 __END__
@@ -39,7 +46,7 @@ requested station
 
 =head1 VERSION
 
-version 1.03
+version 1.04
 
 =head1 DESCRIPTION
 
@@ -93,6 +100,10 @@ When / how long above information is valid.
 
 Returns a new Travel::Status::DE::VRR::Line object.  You should not need to
 call this.
+
+=item $line->TO_JSON
+
+Allows the object data to be serialized to JSON.
 
 =back
 

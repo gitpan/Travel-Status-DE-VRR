@@ -7,7 +7,7 @@ build_requires:
   Test::More: 0
   Test::Pod: 0
 configure_requires:
-  Module::Build: 0.40
+  Module::Build: 0.4
 dynamic_config: 1
 generated_by: 'Module::Build version 0.4003, CPAN::Meta::Converter version 2.120921'
 license: perl
@@ -18,13 +18,13 @@ name: Travel-Status-DE-VRR
 provides:
   Travel::Status::DE::VRR:
     file: lib/Travel/Status/DE/VRR.pm
-    version: 1.03
+    version: 1.04
   Travel::Status::DE::VRR::Line:
     file: lib/Travel/Status/DE/VRR/Line.pm
-    version: 1.03
+    version: 1.04
   Travel::Status::DE::VRR::Result:
     file: lib/Travel/Status/DE/VRR/Result.pm
-    version: 1.03
+    version: 1.04
 requires:
   Carp: 0
   Class::Accessor: 0
@@ -35,4 +35,4 @@ requires:
   perl: v5.10.1
 resources:
   license: http://dev.perl.org/licenses/
-version: 1.03
+version: 1.04

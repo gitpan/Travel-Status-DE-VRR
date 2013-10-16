@@ -6,7 +6,7 @@ use 5.010;
 
 no if $] >= 5.018, warnings => "experimental::smartmatch";
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 use Carp qw(confess cluck);
 use Encode qw(encode decode);
@@ -112,6 +112,8 @@ sub new {
 	$self->{xml} = $response->decoded_content;
 
 	$self->{tree} = XML::LibXML->load_xml( string => $self->{xml}, );
+
+	#	say $self->{tree}->toString(1);
 
 	$self->check_for_ambiguous();
 
@@ -313,6 +315,7 @@ sub results {
 		my $line      = $e_line->getAttribute('number');
 		my $dest      = $e_line->getAttribute('direction');
 		my $info      = $e_info->textContent;
+		my $key       = $e_line->getAttribute('key');
 		my $countdown = $e->getAttribute('countdown');
 		my $delay     = $e_info->getAttribute('delay') // 0;
 		my $type      = $e_info->getAttribute('name');
@@ -334,6 +337,7 @@ sub results {
 				time        => $rtime,
 				platform    => $platform,
 				platform_db => $platform_is_db,
+				key         => $key,
 				lineref     => $line_obj[0] // undef,
 				line        => $line,
 				destination => decode( 'UTF-8', $dest ),
@@ -381,7 +385,7 @@ Travel::Status::DE::VRR - unofficial VRR departure monitor
 
 =head1 VERSION
 
-version 1.03
+version 1.04
 
 =head1 DESCRIPTION
 

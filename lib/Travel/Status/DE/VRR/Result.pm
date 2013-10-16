@@ -6,10 +6,10 @@ use 5.010;
 
 use parent 'Class::Accessor';
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 Travel::Status::DE::VRR::Result->mk_ro_accessors(
-	qw(countdown date delay destination info line lineref platform
+	qw(countdown date delay destination is_cancelled info key line lineref platform
 	  platform_db sched_date sched_time time type)
 );
 
@@ -18,8 +18,23 @@ sub new {
 
 	my $ref = \%conf;
 
+	if ($ref->{delay} eq '-9999') {
+		$ref->{delay} = 0;
+		$ref->{is_cancelled} = 1;
+	}
+	else {
+		$ref->{is_cancelled} = 0;
+	}
+
 	return bless( $ref, $obj );
 }
+
+sub TO_JSON {
+	my ($self) = @_;
+
+	return { %{$self} };
+}
+
 1;
 
 __END__
@@ -41,7 +56,7 @@ departure received by Travel::Status::DE::VRR
 
 =head1 VERSION
 
-version 1.03
+version 1.04
 
 =head1 DESCRIPTION
 
@@ -70,10 +85,8 @@ Actual departure date (DD.MM.YYYY).
 
 =item $departure->delay
 
-Expected delay from scheduled departure time in minutes.
-
-Note that this is only available for DB trains, in other cases it will always
-return 0.
+Expected delay from scheduled departure time in minutes. A delay of 0
+indicates either departure on time or that no delay information is available.
 
 =item $departure->destination
 
@@ -85,6 +98,17 @@ Additional information related to the departure (string).  If departures for
 an address were requested, this is the stop name, otherwise it may be recent
 news related to the line's schedule.  If no information is available, returns
 an empty string.
+
+=item $departure->is_cancelled
+
+1 if the departure got cancelled, 0 otherwise.
+
+=item $departure->key
+
+Unknown.  Unlike the name may suggest, this is not a unique key / UUID for a
+departure: On the same day, different lines departing at the same station
+may have the same key.  It might, however, be unique when combined with the
+B<line> information.
 
 =item $departure->line
 
@@ -134,6 +158,10 @@ field.  See L</DEPARTURE TYPES>.
 
 Returns a new Travel::Status::DE::VRR::Result object.  You should not need to
 call this.
+
+=item $departure->TO_JSON
+
+Allows the object data to be serialized to JSON.
 
 =back
 
