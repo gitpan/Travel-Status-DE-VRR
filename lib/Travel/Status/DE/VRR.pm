@@ -6,7 +6,7 @@ use 5.010;
 
 no if $] >= 5.018, warnings => "experimental::smartmatch";
 
-our $VERSION = '1.04';
+our $VERSION = '1.05';
 
 use Carp qw(confess cluck);
 use Encode qw(encode decode);
@@ -237,7 +237,7 @@ sub lines {
 		my $e_route = ( $e->findnodes($xp_route) )[0];
 		my $e_oper  = ( $e->findnodes($xp_oper) )[0];
 
-		if ( not( $e_info and $e_oper ) ) {
+		if ( not($e_info) ) {
 			cluck( 'node with insufficient data. This should not happen. '
 				  . $e->getAttribute('number') );
 			next;
@@ -248,7 +248,7 @@ sub lines {
 		my $valid      = $e->getAttribute('valid');
 		my $type       = $e_info->getAttribute('name');
 		my $route      = ( $e_route ? $e_route->textContent : undef );
-		my $operator   = $e_oper->textContent;
+		my $operator   = ( $e_oper ? $e_oper->textContent : undef );
 		my $identifier = $e->getAttribute('stateless');
 
 		push(
@@ -385,7 +385,7 @@ Travel::Status::DE::VRR - unofficial VRR departure monitor
 
 =head1 VERSION
 
-version 1.04
+version 1.05
 
 =head1 DESCRIPTION
 

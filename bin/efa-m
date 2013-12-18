@@ -5,7 +5,7 @@ use 5.010;
 
 no if $] >= 5.018, warnings => "experimental::smartmatch";
 
-our $VERSION = '1.04';
+our $VERSION = '1.05';
 
 binmode( STDOUT, ':encoding(utf-8)' );
 
@@ -13,7 +13,7 @@ use Getopt::Long qw(:config no_ignore_case);
 use List::Util qw(max);
 use Travel::Status::DE::VRR;
 
-my ( $date, $time, $input_type, $list_lines );
+my ( $date, $time, $input_type, $list_lines, $relative_times );
 my ( @grep_lines, @grep_platforms );
 
 GetOptions(
@@ -22,6 +22,7 @@ GetOptions(
 	'l|line=s@'     => \@grep_lines,
 	'L|linelist'    => \$list_lines,
 	'p|platform=s@' => \@grep_platforms,
+	'r|relative'    => \$relative_times,
 	't|time=s'      => \$time,
 	'V|version'     => \&show_version,
 
@@ -121,7 +122,8 @@ sub show_results {
 	for my $d ( $status->results ) {
 
 		my $platform = $d->platform;
-		my $dtime    = $d->time;
+		my $dtime    = (
+			$relative_times ? sprintf( '%2d min', $d->countdown ) : $d->time );
 
 		if ( $d->platform_db ) {
 			$platform .= ' (DB)';
@@ -137,7 +139,12 @@ sub show_results {
 		}
 
 		if ( $d->is_cancelled ) {
-			$dtime .= ' CANCELED';
+			if ($relative_times) {
+				next;
+			}
+			else {
+				$dtime .= ' CANCELED';
+			}
 		}
 		if ( $d->delay ) {
 			$dtime .= ' (+' . $d->delay . ')';
@@ -176,7 +183,7 @@ B<efa-m> [B<-d> I<date>] [B<-t> I<time>] I<city> [I<type>B<:>]I<name>
 
 =head1 VERSION
 
-version 1.04
+version 1.05
 
 =head1 DESCRIPTION
 
@@ -204,9 +211,13 @@ repeated)
 Only show departures at I<platforms> (comma-separated list, option may be
 repeated).  Note that the C<< Bstg. >> / C<< Gleis >> prefix must be omitted.
 
+=item B<-r>, B<--relative>
+
+Use relative departure times.
+
 =item B<-t>, B<--time> I<hh:mm>
 
-Show departures starting at I<time> instead of now
+Show departures starting at I<time> instead of now.
 
 =item B<-V>, B<--version>
 
