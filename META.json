@@ -1,7 +1,7 @@
 {
-   "abstract" : "unofficial VRR departure monitor",
+   "abstract" : "unofficial VRR departure monitor.",
    "author" : [
-      "Copyright (C) 2011 by Daniel Friesel E<lt>derf@finalrewind.orgE<gt>"
+      "Copyright (C) 2013-2014 by Daniel Friesel E<lt>derf@finalrewind.orgE<gt>"
    ],
    "dynamic_config" : 1,
    "generated_by" : "Module::Build version 0.4003, CPAN::Meta::Converter version 2.120921",
@@ -39,17 +39,21 @@
       }
    },
    "provides" : {
+      "Travel::Status::DE::EFA" : {
+         "file" : "lib/Travel/Status/DE/EFA.pm",
+         "version" : "1.06"
+      },
+      "Travel::Status::DE::EFA::Line" : {
+         "file" : "lib/Travel/Status/DE/EFA/Line.pm",
+         "version" : "1.06"
+      },
+      "Travel::Status::DE::EFA::Result" : {
+         "file" : "lib/Travel/Status/DE/EFA/Result.pm",
+         "version" : "1.06"
+      },
       "Travel::Status::DE::VRR" : {
          "file" : "lib/Travel/Status/DE/VRR.pm",
-         "version" : "1.05"
-      },
-      "Travel::Status::DE::VRR::Line" : {
-         "file" : "lib/Travel/Status/DE/VRR/Line.pm",
-         "version" : "1.05"
-      },
-      "Travel::Status::DE::VRR::Result" : {
-         "file" : "lib/Travel/Status/DE/VRR/Result.pm",
-         "version" : "1.05"
+         "version" : "1.06"
       }
    },
    "release_status" : "stable",
@@ -58,5 +62,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "1.05"
+   "version" : "1.06"
 }

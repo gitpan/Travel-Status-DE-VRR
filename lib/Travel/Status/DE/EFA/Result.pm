@@ -1,4 +1,4 @@
-package Travel::Status::DE::VRR::Result;
+package Travel::Status::DE::EFA::Result;
 
 use strict;
 use warnings;
@@ -6,9 +6,9 @@ use 5.010;
 
 use parent 'Class::Accessor';
 
-our $VERSION = '1.05';
+our $VERSION = '1.06';
 
-Travel::Status::DE::VRR::Result->mk_ro_accessors(
+Travel::Status::DE::EFA::Result->mk_ro_accessors(
 	qw(countdown date delay destination is_cancelled info key line lineref platform
 	  platform_db sched_date sched_time time type)
 );
@@ -18,8 +18,8 @@ sub new {
 
 	my $ref = \%conf;
 
-	if ($ref->{delay} eq '-9999') {
-		$ref->{delay} = 0;
+	if ( $ref->{delay} eq '-9999' ) {
+		$ref->{delay}        = 0;
 		$ref->{is_cancelled} = 1;
 	}
 	else {
@@ -41,8 +41,8 @@ __END__
 
 =head1 NAME
 
-Travel::Status::DE::VRR::Result - Information about a single
-departure received by Travel::Status::DE::VRR
+Travel::Status::DE::EFA::Result - Information about a single
+departure received by Travel::Status::DE::EFA
 
 =head1 SYNOPSIS
 
@@ -56,12 +56,12 @@ departure received by Travel::Status::DE::VRR
 
 =head1 VERSION
 
-version 1.05
+version 1.06
 
 =head1 DESCRIPTION
 
-Travel::Status::DE::VRR::Result describes a single departure as obtained by
-Travel::Status::DE::VRR.  It contains information about the time, platform,
+Travel::Status::DE::EFA::Result describes a single departure as obtained by
+Travel::Status::DE::EFA.  It contains information about the time, platform,
 line number and destination.
 
 =head1 METHODS
@@ -116,7 +116,7 @@ The name/number of the line.
 
 =item $departure->lineref
 
-Travel::Status::DE::VRR::Line(3pm) object describing the departing line in
+Travel::Status::DE::EFA::Line(3pm) object describing the departing line in
 detail.
 
 =item $departure->platform
@@ -154,9 +154,9 @@ field.  See L</DEPARTURE TYPES>.
 
 =over
 
-=item $departure = Travel::Status::DE::VRR::Result->new(I<%data>)
+=item $departure = Travel::Status::DE::EFA::Result->new(I<%data>)
 
-Returns a new Travel::Status::DE::VRR::Result object.  You should not need to
+Returns a new Travel::Status::DE::EFA::Result object.  You should not need to
 call this.
 
 =item $departure->TO_JSON
@@ -214,11 +214,11 @@ interface.
 
 =head1 SEE ALSO
 
-Travel::Status::DE::VRR(3pm).
+Travel::Status::DE::EFA(3pm).
 
 =head1 AUTHOR
 
-Copyright (C) 2011 by Daniel Friesel E<lt>derf@finalrewind.orgE<gt>
+Copyright (C) 2011-2014 by Daniel Friesel E<lt>derf@finalrewind.orgE<gt>
 
 =head1 LICENSE
 

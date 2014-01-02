@@ -2,9 +2,10 @@ bin/efa-m
 Build.PL
 Changelog
 COPYING
+lib/Travel/Status/DE/EFA.pm
+lib/Travel/Status/DE/EFA/Line.pm
+lib/Travel/Status/DE/EFA/Result.pm
 lib/Travel/Status/DE/VRR.pm
-lib/Travel/Status/DE/VRR/Line.pm
-lib/Travel/Status/DE/VRR/Result.pm
 MANIFEST			This list of files
 META.json
 META.yml

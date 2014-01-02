@@ -1,7 +1,7 @@
 ---
-abstract: 'unofficial VRR departure monitor'
+abstract: 'unofficial VRR departure monitor.'
 author:
-  - 'Copyright (C) 2011 by Daniel Friesel E<lt>derf@finalrewind.orgE<gt>'
+  - 'Copyright (C) 2013-2014 by Daniel Friesel E<lt>derf@finalrewind.orgE<gt>'
 build_requires:
   File::Slurp: 0
   Test::More: 0
@@ -16,15 +16,18 @@ meta-spec:
   version: 1.4
 name: Travel-Status-DE-VRR
 provides:
+  Travel::Status::DE::EFA:
+    file: lib/Travel/Status/DE/EFA.pm
+    version: 1.06
+  Travel::Status::DE::EFA::Line:
+    file: lib/Travel/Status/DE/EFA/Line.pm
+    version: 1.06
+  Travel::Status::DE::EFA::Result:
+    file: lib/Travel/Status/DE/EFA/Result.pm
+    version: 1.06
   Travel::Status::DE::VRR:
     file: lib/Travel/Status/DE/VRR.pm
-    version: 1.05
-  Travel::Status::DE::VRR::Line:
-    file: lib/Travel/Status/DE/VRR/Line.pm
-    version: 1.05
-  Travel::Status::DE::VRR::Result:
-    file: lib/Travel/Status/DE/VRR/Result.pm
-    version: 1.05
+    version: 1.06
 requires:
   Carp: 0
   Class::Accessor: 0
@@ -35,4 +38,4 @@ requires:
   perl: v5.10.1
 resources:
   license: http://dev.perl.org/licenses/
-version: 1.05
+version: 1.06
