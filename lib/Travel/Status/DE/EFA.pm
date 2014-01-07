@@ -6,7 +6,7 @@ use 5.010;
 
 no if $] >= 5.018, warnings => "experimental::smartmatch";
 
-our $VERSION = '1.06';
+our $VERSION = '1.07';
 
 use Carp qw(confess cluck);
 use Encode qw(encode decode);
@@ -84,11 +84,11 @@ sub new {
 			mode                   => 'direct',
 			nameInfo_dm            => 'invalid',
 			nameState_dm           => 'empty',
-			name_dm                => $opt{name},
+			name_dm                => encode( 'ISO-8859-15', $opt{name} ),
 			outputFormat           => 'XML',
 			placeInfo_dm           => 'invalid',
 			placeState_dm          => 'empty',
-			place_dm               => $opt{place},
+			place_dm               => encode( 'ISO-8859-15', $opt{place} ),
 			ptOptionsActive        => '1',
 			requestID              => '0',
 			reset                  => 'neue Anfrage',
@@ -389,7 +389,7 @@ Travel::Status::DE::EFA - unofficial EFA departure monitor
 
 =head1 VERSION
 
-version 1.06
+version 1.07
 
 =head1 DESCRIPTION
 

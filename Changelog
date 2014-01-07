@@ -1,3 +1,9 @@
+Travel::Status::DE::VRR 1.07 - Tue Jan 07 2014
+
+    * efa-m: Add previously undocumented -L option to manual
+    * efa-m: Handle UTF8 in place/stop input
+    * Travel::Status::DE::EFA: Handle decoded input with non-ASCII characters
+
 Travel::Status::DE::VRR 1.06 - Thu Jan 02 2014
 
     * Add Travel::Status::DE::EFA module, move ::Result and ::Line to

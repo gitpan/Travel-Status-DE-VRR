@@ -18,16 +18,16 @@ name: Travel-Status-DE-VRR
 provides:
   Travel::Status::DE::EFA:
     file: lib/Travel/Status/DE/EFA.pm
-    version: 1.06
+    version: 1.07
   Travel::Status::DE::EFA::Line:
     file: lib/Travel/Status/DE/EFA/Line.pm
-    version: 1.06
+    version: 1.07
   Travel::Status::DE::EFA::Result:
     file: lib/Travel/Status/DE/EFA/Result.pm
-    version: 1.06
+    version: 1.07
   Travel::Status::DE::VRR:
     file: lib/Travel/Status/DE/VRR.pm
-    version: 1.06
+    version: 1.07
 requires:
   Carp: 0
   Class::Accessor: 0
@@ -38,4 +38,4 @@ requires:
   perl: v5.10.1
 resources:
   license: http://dev.perl.org/licenses/
-version: 1.06
+version: 1.07

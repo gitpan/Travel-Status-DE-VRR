@@ -41,19 +41,19 @@
    "provides" : {
       "Travel::Status::DE::EFA" : {
          "file" : "lib/Travel/Status/DE/EFA.pm",
-         "version" : "1.06"
+         "version" : "1.07"
       },
       "Travel::Status::DE::EFA::Line" : {
          "file" : "lib/Travel/Status/DE/EFA/Line.pm",
-         "version" : "1.06"
+         "version" : "1.07"
       },
       "Travel::Status::DE::EFA::Result" : {
          "file" : "lib/Travel/Status/DE/EFA/Result.pm",
-         "version" : "1.06"
+         "version" : "1.07"
       },
       "Travel::Status::DE::VRR" : {
          "file" : "lib/Travel/Status/DE/VRR.pm",
-         "version" : "1.06"
+         "version" : "1.07"
       }
    },
    "release_status" : "stable",
@@ -62,5 +62,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "1.06"
+   "version" : "1.07"
 }
